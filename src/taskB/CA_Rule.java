@@ -8,5 +8,5 @@ package taskB;
 public interface CA_Rule
 {
 	// TODO add code as appropriate.
-	abstract public void ImplementRule();
+	abstract public void ImplementRule(int[][] board);
 }
