@@ -1,4 +1,5 @@
 package taskB;
+// Authors: Yulia Moshan, Omri Vaturi
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
