@@ -1,19 +1,22 @@
 package taskB;
+// Authors: Yulia Moshan, Omri Vaturi
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.Iterator;
 
 public class GoL_Board extends CA {
-    private String[] cell_state = {" ", "*"};
-    private int rows;
-    private int cols;
-    private int[][] board;
-    private final FileWriter board_buff = new FileWriter("board.txt");
+    protected int rows;
+    protected int cols;
+    protected int[][] board;
+    protected BufferedReader reader;
 
-    public GoL_Board(int rows, int cols) throws IOException {
-        board = new int[rows][cols];
-        SetBoard(board);
-
+    public GoL_Board(int rows, int cols, BufferedReader reader) throws IOException {
+        this.rows = rows;
+        this.cols = cols;
+        this.board = new int[this.rows][this.cols];
+        this.reader = reader;
+        SetBoard(board, reader);
     }
 
     @Override
@@ -22,64 +25,34 @@ public class GoL_Board extends CA {
         return null;
     }
 
-    public void SetBoard(int[][] board) {
-        Random random = new Random();
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.cols; j++) {
-                int rand_state = random.nextInt(2);
-                board[i][j] = rand_state;
+    public void SetBoard(int[][] board, BufferedReader reader) throws IOException {
+        String lines = reader.readLine();
+        for (int i = 0; i < rows && lines != null; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (lines.charAt(j) == '*')
+                    board[i][j] = 1;
+                else if (lines.charAt(j) == ' ')
+                    board[i][j] = 0;
             }
+            lines = reader.readLine();
         }
     }
 
-    public int[][] readFile() {
-        int index = 0;
-        int[][] readBoard;
-        try (BufferedReader reader = new BufferedReader(new FileReader("board.txt"))) {
-            String size = reader.readLine();
-            String[] integers = size.split(" ");
-            int r = Integer.parseInt(integers[0]);
-            int c = Integer.parseInt(integers[1]);
-            readBoard = new int[r][c];
-            for (int i = 0; i < readBoard.length; i++) {
-                String line = reader.readLine();
-                for (int j = 0; j < readBoard[i].length; j++) {
-                    readBoard[i][j] = line.charAt(index++);
-                }
-                index = 0;
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return readBoard;
+    public void playGoL(int[][] board) {
+        GoL_Rule golRule = new GoL_Rule();
+        this.board = golRule.ImplementRule(board);
     }
 
-    public void toFile(int[][] board) throws IOException {
-        try (BufferedWriter wr = new BufferedWriter(board_buff)) {
-            wr.write(board.length + " " + board[0].length);
-            wr.newLine();
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board[i].length; j++) {
-                    wr.write(board[i][j]);
-                }
-                wr.newLine();
-            }
-        }
-    }
-
-    public String CurrentBoardOutput() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void printBoard(int[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                System.out.print(board[i][j]);
+    public void CurrentBoardOutput() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] == 1)
+                    System.out.print("*");
+                else if (board[i][j] == 0)
+                    System.out.print(" ");
             }
             System.out.println();
         }
+        System.out.println("= = = = = = = = = = = = = = = = = = = = = = = =");
     }
-
 }
